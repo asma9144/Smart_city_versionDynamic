@@ -15,20 +15,37 @@ tCell *InitCell (tCell *cell, Batiment elt, tCell *succ){
 	return cell;
 
 }
-tCell *InsereList(tCell *tete, Batiment elt)
-{
-	tCell *cour=tete, *pred=NULL;
 
-	while(cour)
-	{
-		pred = cour;
-		cour = cour->succ;
-	}
+tCell *InsereList(tCell *tete, Batiment elt){
 
-	if(pred)
-		pred->succ = InitCell(alloc(tCell),elt,NULL);
-	else
-		tete = InitCell(alloc(tCell),elt,NULL);
+	if(tete == NULL) {
+        tCell *Nouveau = alloc(tCell);
+        if(Nouveau == NULL) {
+            printf("Erreur d'allocation mÃ©moire\n");
+            return NULL;
+        }
+        return InitCell(Nouveau, elt, NULL);
+    }
+
+    tCell *P = tete;
+    tCell *prec = NULL;
+
+    while(P != NULL){
+
+        prec = P;
+        P = P->succ;
+
+    }
+
+    tCell *NouveauBatiment = alloc(tCell);
+    if(NouveauBatiment == NULL) {
+        printf("Erreur d'allocation mÃ©moire\n");
+        return tete;
+    }
+
+    tCell *Nouveau= InitCell(NouveauBatiment, elt, NULL);
+
+    prec->succ = Nouveau;
 
 	return tete;
 
@@ -36,6 +53,7 @@ tCell *InsereList(tCell *tete, Batiment elt)
 
 
 // Recherche d'un batiment par ID
+
 tCell* rechercheBatimentParId(int id) {
     tCell *cour = adr_batiment;
 
@@ -53,7 +71,7 @@ tCell* rechercheBatimentParId(int id) {
     return NULL;
 }
 
-// ajout d'un bâtiment
+// ajout d'un bï¿½timent
 
 void ajouterBatiment()
 {
@@ -64,7 +82,7 @@ void ajouterBatiment()
         scanf("%d",&b.id_batiment);
     }while ((int)b.id_batiment!=b.id_batiment);
 
-    printf("Entrez le nom du bâtiment: ");
+    printf("Entrez le nom du bï¿½timent: ");
     scanf(" %[^\n]s", b.nom_batiment);
     printf("Entrez la rue: ");
     scanf(" %[^\n]s", b.adresse.rue);
@@ -75,30 +93,43 @@ void ajouterBatiment()
     b.nb_equipements = 0;
 
     adr_batiment=InsereList(adr_batiment,b);
-    printf("Bâtiment ajouté avec succès ! ID: %d\n", b.id_batiment);
+    printf("Bï¿½timent ajoutï¿½ avec succï¿½s ! ID: %d\n", b.id_batiment);
 
 }
 
 
-tCell* ParcourList(tCell *tete , int val)
-{
-	while(tete)
-	{
-		if(tete->elt.id_batiment==val) return (tete);
-		else
+tCell* VerifierExistence_Element(tCell *tete , int val){
+
+	if(tete == NULL) {
+        return NULL; // Liste vide
+    }
+    
+    while(tete){
+		
+        if(tete->elt.id_batiment==val){
+
+            return tete;
+
+		} else {
+            
             tete = tete->succ;
+        
+        }
+
 	}
+
 	return NULL;
 }
+
 
 void modifierBatiment() {
     int id;
     tCell *bat;
-    printf("Entrez l'ID du bâtiment à modifier: ");
+    printf("Entrez l'ID du bÃ¢timent Ã  modifier: ");
     scanf("%d", &id);
     bat=ParcourList(adr_batiment ,id);
     if (bat==NULL){
-        printf("Bâtiment introuvable.\n");
+        printf("BÃ¢timent introuvable.\n");
     }
     printf("Nom actuel: %s\n", bat->elt.nom_batiment);
     printf("Nouveau nom: ");
@@ -110,13 +141,13 @@ void modifierBatiment() {
     scanf(" %[^\n]s", bat->elt.adresse.ville);
     printf("Nouveau code postal: ");
     scanf("%d", &bat->elt.adresse.code_postal);
-    printf("Bâtiment modifié avec succès.\n");
+    printf("BÃ¢timent modifiÃ© avec succÃ¨s.\n");
 
     return;
 
 }
 
-void SupprimeList(tCell **adr_batiment, int id)
+void Supprimer_Noeud(tCell **adr_batiment, int id)
 {
     tCell *pred = NULL, *cour = *adr_batiment;
 
@@ -137,7 +168,8 @@ void SupprimeList(tCell **adr_batiment, int id)
             *adr_batiment = cour->succ;
 
         free(cour);
-        printf("Bâtiment supprimé avec succès.\n");
+
+        printf("Batiment supprimÃ© avec succÃ¨s !\n");
     }
     else
     {
@@ -146,19 +178,25 @@ void SupprimeList(tCell **adr_batiment, int id)
 }
 
 void afficherBatimentsListe(tCell *adr_batiment) {
+
+    if(adr_batiment == NULL) {
+        printf("La liste des batiments est vide.\n");
+        return;
+    }
+
     tCell *cour = adr_batiment;
     int compte = 0;
 
-    printf("\n=== Liste des bâtiments ===\n");
+    printf("\n=== Liste des batiments ===\n");
 
     if (!cour) {
-        printf("Aucun bâtiment dans la liste.\n");
+        printf("Aucun batiment dans la liste.\n");
         return;
     }
 
     while (cour) {
         compte++;
-        printf("%d. ID: %d | Nom: %s | Adresse: %s, %s %d | Nb équipements: %d\n",
+        printf("%d. ID: %d | Nom: %s | Adresse: %s, %s %d | Nb ï¿½quipements: %d\n",
                compte,
                cour->elt.id_batiment,
                cour->elt.nom_batiment,
@@ -168,14 +206,14 @@ void afficherBatimentsListe(tCell *adr_batiment) {
                cour->elt.nb_equipements);
         cour = cour->succ;
     }
-    printf("\nTotal: %d bâtiment(s)\n", compte);
+    printf("\nTotal: %d batiment(s)\n", compte);
 }
 
 
 tCell* rechercheBatimentParIdListe(tCell *adr_batiment, int id) {
-    // Vérification des paramètres d'entrée
+
     if (adr_batiment == NULL) {
-        printf("Erreur : Liste vide\n");
+        printf("La Liste des batiments est vide\n");
         return NULL;
     }
 
@@ -190,26 +228,38 @@ tCell* rechercheBatimentParIdListe(tCell *adr_batiment, int id) {
     while (cour) {
         compteur++;
         if (cour->elt.id_batiment == id) {
-            printf("Bâtiment trouvé après %d itération(s)\n", compteur);
+            printf("BBatiment trouvÃ© aprÃ¨s %d itÃ©ration(s)\n", compteur);
             return cour;
         }
         cour = cour->succ;
     }
 
-    printf("Aucun bâtiment avec l'ID %d\n", id);
+    printf("Aucun batiment avec l'ID %d\n", id);
     return NULL;
 }
 
 
-// Initialisation d'une cellule équipement
+// Initialisation d'une cellule Ã©quipement
+
 tCellEq* InitCellEq(tCellEq *cell, Equipement elt, tCellEq *succ) {
     cell->elt = elt;
     cell->succ = succ;
     return cell;
 }
 
-// Insertion d'un équipement dans la liste
+// Insertion d'un Ã©quipement dans la liste
+
 tCellEq* InsereListEq(tCellEq *tete, Equipement elt) {
+    
+    if(tete == NULL) {
+        tCellEq *Nouveau = (tCellEq*)malloc(sizeof(tCellEq));
+        if(Nouveau == NULL) {
+            printf("Erreur d'allocation mÃ©moire\n");
+            return NULL;
+        }
+        return InitCellEq(Nouveau, elt, NULL);
+    }
+
     tCellEq *cour = tete, *pred = NULL;
 
     while(cour) {
@@ -219,7 +269,7 @@ tCellEq* InsereListEq(tCellEq *tete, Equipement elt) {
 
     tCellEq *nouveau = (tCellEq*)malloc(sizeof(tCellEq));
     if(nouveau == NULL) {
-        printf("Erreur d'allocation mémoire\n");
+        printf("Erreur d'allocation mÃ©moire\n");
         return tete;
     }
 
@@ -229,13 +279,16 @@ tCellEq* InsereListEq(tCellEq *tete, Equipement elt) {
         tete = InitCellEq(nouveau, elt, NULL);
 
     return tete;
+
 }
 
-// Recherche d'un équipement par ID
+// Recherche d'un Ã©quipement par ID
+
 tCellEq* rechercheEquipementParId(int id) {
     tCellEq *cour = adr_equipement;
 
     if (adr_equipement == NULL) {
+        printf("La Liste des Ã©quipements est vide\n");
         return NULL;
     }
 
@@ -249,7 +302,8 @@ tCellEq* rechercheEquipementParId(int id) {
     return NULL;
 }
 
-// Vérifier si un bâtiment existe
+// VÃ©rifier si un bÃ¢timent existe
+
 int batimentExiste(int idBatiment) {
     tCell *cour = adr_batiment;
     while (cour) {
@@ -261,74 +315,74 @@ int batimentExiste(int idBatiment) {
     return 0;
 }
 
-//  Ajouter un équipement
+//  Ajouter un ï¿½quipement
 void ajouterEquipement() {
     Equipement eq;
 
-    // Saisie des données
-    printf("\n=== Ajout d'un nouvel équipement ===\n");
+    // Saisie des donnÃ©es
+    printf("\n=== Ajout d'un nouvel Ã©quipement ===\n");
 
     do {
-        printf("ID de l'équipement: ");
+        printf("ID de l'Ã©quipement: ");
         scanf("%d", &eq.id);
         if (rechercheEquipementParId(eq.id) != NULL) {
-            printf("Cet ID existe déjà. Veuillez en choisir un autre.\n");
+            printf("Cet ID existe dï¿½jï¿½. Veuillez en choisir un autre.\n");
         }
     } while (rechercheEquipementParId(eq.id) != NULL);
 
-    printf("Nom de l'équipement: ");
+    printf("Nom de l'ï¿½quipement: ");
     scanf(" %[^\n]", eq.nom);
 
     printf("Consommation par minute (kWh): ");
     scanf("%f", &eq.conso_min);
 
     do {
-        printf("ID du bâtiment associé: ");
+        printf("ID du batiment associÃ©: ");
         scanf("%d", &eq.idBatiment);
         if (!batimentExiste(eq.idBatiment)) {
-            printf("Ce bâtiment n'existe pas. Veuillez entrer un ID valide.\n");
+            printf("Ce batiment n'existe pas. Veuillez entrer un ID valide.\n");
         }
     } while (!batimentExiste(eq.idBatiment));
 
-    printf("ID du type d'équipement: ");
+    printf("ID du type d'Ã©quipement: ");
     scanf("%d", &eq.idType);
 
-    eq.etat = 0;  // Par défaut éteint
+    eq.etat = 0;  // Par dÃ©faut Ã©teint
     eq.debut_utilisation = 0;
 
-    // Ajouter à la liste
+    // Ajouter Ã  la liste
     adr_equipement = InsereListEq(adr_equipement, eq);
 
-    // Mettre à jour le compteur d'équipements dans le bâtiment
+    // Mettre Ã  jour le compteur d'Ã©quipements dans le bÃ¢timent
     tCell *bat = rechercheBatimentParIdListe(adr_batiment, eq.idBatiment);
     if (bat) {
         bat->elt.nb_equipements++;
     }
 
-    printf("Équipement ajouté avec succès !\n");
+    printf("Ã‰quipement ajoutÃ© avec succÃ¨s !\n");
 }
 
-//  Modifier un équipement
+//  Modifier un Ã©quipement
 void modifierEquipement() {
     int id;
     tCellEq *eq;
 
-    printf("\n=== Modification d'un équipement ===\n");
-    printf("ID de l'équipement à modifier: ");
+    printf("\n=== Modification d'un Ã©quipement ===\n");
+    printf("ID de l'Ã©quipement Ã  modifier: ");
     scanf("%d", &id);
 
     eq = rechercheEquipementParId(id);
     if (eq == NULL) {
-        printf("Équipement introuvable.\n");
+        printf("Ã‰quipement introuvable.\n");
         return;
     }
 
     printf("\n--- Informations actuelles ---\n");
     printf("1. Nom: %s\n", eq->elt.nom);
     printf("2. Consommation: %.2f kWh/min\n", eq->elt.conso_min);
-    printf("3. ID Bâtiment: %d\n", eq->elt.idBatiment);
+    printf("3. ID BÃ¢timent: %d\n", eq->elt.idBatiment);
     printf("4. ID Type: %d\n", eq->elt.idType);
-    printf("5. État: %s\n", eq->elt.etat ? "Allumé" : "Éteint");
+    printf("5. Ã‰tat: %s\n", eq->elt.etat ? "AllumÃ©" : "Ã‰teint");
 
     int choix;
     printf("\nQue voulez-vous modifier ? (0 pour annuler): ");
@@ -345,10 +399,10 @@ void modifierEquipement() {
             break;
         case 3:
             do {
-                printf("Nouvel ID bâtiment: ");
+                printf("Nouvel ID bÃ¢timent: ");
                 scanf("%d", &eq->elt.idBatiment);
                 if (!batimentExiste(eq->elt.idBatiment)) {
-                    printf("Bâtiment inexistant.\n");
+                    printf("BÃ¢timent inexistant.\n");
                 }
             } while (!batimentExiste(eq->elt.idBatiment));
             break;
@@ -357,27 +411,27 @@ void modifierEquipement() {
             scanf("%d", &eq->elt.idType);
             break;
         case 5:
-            printf("Nouvel état (0=éteint, 1=allumé): ");
+            printf("Nouvel Ã©tat (0=Ã©teint, 1=allumÃ©): ");
             scanf("%d", &eq->elt.etat);
             break;
         default:
-            printf("Modification annulée.\n");
+            printf("Modification annulÃ©e.\n");
             return;
     }
 
-    printf("Équipement modifié avec succès.\n");
+    printf("Ã‰quipement modifiÃ© avec succÃ¨s.\n");
 }
 
-//  Supprimer un équipement
+//  Supprimer un Ã©quipement
 void supprimerEquipement() {
     int id;
-    printf("\n=== Suppression d'un équipement ===\n");
-    printf("ID de l'équipement à supprimer: ");
+    printf("\n=== Suppression d'un Ã©quipement ===\n");
+    printf("ID de l'Ã©quipement Ã  supprimer: ");
     scanf("%d", &id);
 
     tCellEq *pred = NULL, *cour = adr_equipement;
 
-    // Recherche de l'équipement
+    // Recherche de l'Ã©quipement
     while (cour) {
         if (cour->elt.id == id) {
             break;
@@ -387,11 +441,11 @@ void supprimerEquipement() {
     }
 
     if (cour == NULL) {
-        printf("Équipement introuvable.\n");
+        printf("Ã‰quipement introuvable.\n");
         return;
     }
 
-    // Mettre à jour le compteur du bâtiment
+    // Mettre Ã  jour le compteur du bÃ¢timent
     tCell *bat = rechercheBatimentParIdListe(adr_batiment, cour->elt.idBatiment);
     if (bat) {
         bat->elt.nb_equipements--;
@@ -405,121 +459,119 @@ void supprimerEquipement() {
     }
 
     free(cour);
-    printf("Équipement supprimé avec succès.\n");
+    printf("Ã‰quipement supprimÃ© avec succÃ¨s.\n");
 }
 
-//  Afficher tous les équipements
+//  Afficher tous les Ã©quipements
 void afficherEquipements() {
     tCellEq *cour = adr_equipement;
     int compte = 0;
 
-    printf("\n=== Liste de tous les équipements ===\n");
+    printf("\n=== Liste de tous les Ã©quipements ===\n");
 
     if (!cour) {
-        printf("Aucun équipement dans la liste.\n");
+        printf("Aucun Ã©quipement dans la liste.\n");
         return;
     }
 
     while (cour) {
         compte++;
         printf("\n[%d] ID: %d - %s\n", compte, cour->elt.id, cour->elt.nom);
-        printf("    Consommation: %.2f kWh/min | Bâtiment ID: %d\n",
+        printf("    Consommation: %.2f kWh/min | BÃ¢timent ID: %d\n",
                cour->elt.conso_min, cour->elt.idBatiment);
-        printf("    Type ID: %d | État: %s\n",
-               cour->elt.idType, cour->elt.etat ? "Allumé" : "Éteint");
+        printf("    Type ID: %d | Ã‰tat: %s\n",
+               cour->elt.idType, cour->elt.etat ? "AllumÃ©" : "Ã‰teint");
 
         cour = cour->succ;
     }
-    printf("\nTotal: %d équipement(s)\n", compte);
+    printf("\nTotal: %d Ã©quipement(s)\n", compte);
 }
 
-//  Afficher les équipements par bâtiment
+//  Afficher les Ã©quipements par bÃ¢timent
 void afficherEquipementsParBatiment() {
     int idBatiment;
     tCellEq *cour = adr_equipement;
     int compte = 0;
 
-    printf("\n=== Équipements par bâtiment ===\n");
-    printf("ID du bâtiment: ");
+    printf("\n=== Ã‰quipements par bÃ¢timent ===\n");
+    printf("ID du bÃ¢timent: ");
     scanf("%d", &idBatiment);
 
-    // Vérifier si le bâtiment existe
+    // VÃ©rifier si le bÃ¢timent existe
     if (!batimentExiste(idBatiment)) {
-        printf("Bâtiment inexistant.\n");
+        printf("BÃ¢timent inexistant.\n");
         return;
     }
 
-    printf("\nÉquipements du bâtiment ID %d:\n", idBatiment);
-
+    printf("\nÃ‰quipements du bÃ¢timent ID %d:\n", idBatiment);
     while (cour) {
         if (cour->elt.idBatiment == idBatiment) {
             compte++;
             printf("%d. %s (ID: %d) - %s\n",
                    compte, cour->elt.nom, cour->elt.id,
-                   cour->elt.etat ? "Allumé" : "Éteint");
+                   cour->elt.etat ? "AllumÃ©" : "Ã‰teint");
         }
         cour = cour->succ;
     }
 
     if (compte == 0) {
-        printf("Aucun équipement dans ce bâtiment.\n");
+        printf("Aucun Ã©quipement dans ce bÃ¢timent.\n");
     } else {
-        printf("Total: %d équipement(s)\n", compte);
+        printf("Total: %d Ã©quipement(s)\n", compte);
     }
 }
 
-//  Afficher les équipements par type
+//  Afficher les Ã©quipements par type
 void afficherEquipementsParType() {
     int idType;
     tCellEq *cour = adr_equipement;
     int compte = 0;
 
-    printf("\n=== Équipements par type ===\n");
+    printf("\n=== Ã‰quipements par type ===\n");
     printf("ID du type: ");
     scanf("%d", &idType);
 
-    printf("\nÉquipements de type ID %d:\n", idType);
-
+    printf("\nÃ‰quipements de type ID %d:\n", idType);
     while (cour) {
         if (cour->elt.idType == idType) {
             compte++;
-            printf("%d. %s (ID: %d) - Bâtiment: %d - %s\n",
+            printf("%d. %s (ID: %d) - BÃ¢timent: %d - %s\n",
                    compte, cour->elt.nom, cour->elt.id,
-                   cour->elt.idBatiment, cour->elt.etat ? "Allumé" : "Éteint");
+                   cour->elt.idBatiment, cour->elt.etat ? "AllumÃ©" : "Ã‰teint");
         }
         cour = cour->succ;
     }
 
     if (compte == 0) {
-        printf("Aucun équipement de ce type.\n");
+        printf("Aucun Ã©quipement de ce type.\n");
     } else {
-        printf("Total: %d équipement(s)\n", compte);
+        printf("Total: %d Ã©quipement(s)\n", compte);
     }
 }
 
-//  Fonction supplémentaire : Allumer/éteindre un équipement
+//  Fonction supplÃ©mentaire : Allumer/Ã©teindre un Ã©quipement
 void changerEtatEquipement() {
     int id;
-    printf("\n=== Changer l'état d'un équipement ===\n");
-    printf("ID de l'équipement: ");
+    printf("\n=== Changer l'Ã©tat d'un Ã©quipement ===\n");
+    printf("ID de l'Ã©quipement: ");
     scanf("%d", &id);
 
     tCellEq *eq = rechercheEquipementParId(id);
     if (eq == NULL) {
-        printf("Équipement introuvable.\n");
+        printf("Ã‰quipement introuvable.\n");
         return;
     }
 
-    printf("Équipement: %s (actuellement %s)\n",
-           eq->elt.nom, eq->elt.etat ? "allumé" : "éteint");
-    printf("Nouvel état (0=éteint, 1=allumé): ");
+    printf("Ã‰quipement: %s (actuellement %s)\n",
+           eq->elt.nom, eq->elt.etat ? "allumÃ©" : "Ã©teint");
+    printf("Nouvel Ã©tat (0=Ã©teint, 1=allumÃ©): ");
     scanf("%d", &eq->elt.etat);
 
     if (eq->elt.etat) {
         eq->elt.debut_utilisation = time(NULL);
-        printf("Équipement allumé.\n");
+        printf("Ã‰quipement allumÃ©.\n");
     } else {
         eq->elt.debut_utilisation = 0;
-        printf("Équipement éteint.\n");
+        printf("Ã‰quipement Ã©teint.\n");
     }
 }

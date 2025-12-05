@@ -25,30 +25,32 @@ void gestionBatiments() {
             case 3: {
 
                 int id;
-                printf("Entrez l'ID du b‚timent ‡ supprimer: ");
+                printf("Entrez l'ID du b√¢timent √† supprimer: ");
                 scanf("%d", &id);
-                SupprimeList( &adr_batiment, id);
+                Supprimer_Noeud( &adr_batiment, id);
                 break;
-    }
+
+            }
+            
             case 4: afficherBatimentsListe( adr_batiment); break;
             case 0: break;
-            default: printf("Choix invalide. Veuillez rÈessayer.\n"); break;
+            default: printf("Choix invalide. Veuillez r√©essayer.\n"); break;
         }
     } while (choix != 0);
 }
 
 
-/* Menu de gestion des Èquipements */
+/* Menu de gestion des √©quipements */
 void gestionEquipements() {
     int choix;
     do {
-        printf("\n=== GESTION DES …QUIPEMENTS …LECTRIQUES ===\n");
-        printf("1. Ajouter un Èquipement\n");
-        printf("2. Modifier un Èquipement\n");
-        printf("3. Supprimer un Èquipement\n");
-        printf("4. Afficher tous les Èquipements\n");
-        printf("5. Afficher les Èquipements par b‚timent\n");
-        printf("6. Afficher les Èquipements par type\n");
+        printf("\n=== GESTION DES EQUIPEMENTS ELECTRIQUES ===\n");
+        printf("1. Ajouter un √©quipement\n");
+        printf("2. Modifier un √©quipement\n");
+        printf("3. Supprimer un √©quipement\n");
+        printf("4. Afficher tous les √©quipements\n");
+        printf("5. Afficher les √©quipements par b√¢timent\n");
+        printf("6. Afficher les √©quipements par type\n");
         printf("7.changer l'etat d'un equipement\n");
         printf("0. Retour au menu principal\n");
         printf("Entrez votre choix: ");
@@ -62,7 +64,7 @@ void gestionEquipements() {
             case 6: afficherEquipementsParType(); break;
             case 7: changerEtatEquipement();break ;
             case 0: break;
-            default: printf("Choix invalide. Veuillez rÈessayer.\n"); break;
+            default: printf("Choix invalide. Veuillez r√©essayer.\n"); break;
         }
     } while (choix != 0);
 }
